@@ -3,6 +3,11 @@ package images;
 import java.io.IOException;
 
 
+/**
+ * The ImageTransformerClass is the parent class to all of the image transformations.
+ * @author quaydragon
+ *
+ */
 public class ImageTransformerClass implements ImageTransformer {
   int clampMinimum;
   int clampMaximum;
@@ -11,49 +16,42 @@ public class ImageTransformerClass implements ImageTransformer {
   int width;
   int[][][] img;
 
-  
+  /**
+   * Takes in the image to be transformed by the sub-classes. 
+   * @param image the image to be transformed
+   * @throws IOException thrown if the image cannot be loaded
+   */
   public ImageTransformerClass(Image image) throws IOException {
     this.clampMinimum = 0;
     this.clampMaximum = 255;
     this.height = image.getHeight();
     this.width = image.getWidth();
-    this.img = image.loadImage();
-//    this.transformedImage = transform(image);
-    
+    this.img = image.loadImage();  
   }
   
-  //TODO: Consider taking out the reading and writing part of this image
-  
-  //TODO: Better document what this is doing
-  
 
-  //TODO: this would take in a function
-
-  //TODO: Consider making this a private function
-  
-  public int[][][] transform(Image image) throws IOException {
+  @Override
+  public int[][][] transform() throws IOException {
+    //TODO: Think about putting the prep function in the constructor
     this.prepFunction();
     int[][][] newImage = null;
-    try {
-      for (int i = 0; i < image.getHeight(); i++) {
-        for (int j = 0; j < image.getWidth(); j++) {
 
-          
-          newImage = this.specificTransform(img, i, j);
-          
-        }
+
+    for (int i = 0; i < this.height; i++) {
+      for (int j = 0; j < this.width; j++) {
+
+        
+        newImage = this.specificTransform(img, i, j);
+        
       }
-    } catch (IOException e) {
-      // Could not edit the image in the program
-      newImage = img;
     }
-//    image.writeImage(newImage);
+
     return newImage;
   }
 
 
   @Override
-  public int[][][] specificTransform(int[][][] img, int i, int j) {
+  public int[][][] specificTransform(int[][][] img, int i, int j) throws IOException {
 
     return img;
   }
@@ -61,7 +59,8 @@ public class ImageTransformerClass implements ImageTransformer {
 
 
 
-  private int clampValue(int value) {
+  @Override
+  public int clampValue(int value) {
     if (value < this.clampMinimum) {
       return 0;
     } 
@@ -72,22 +71,8 @@ public class ImageTransformerClass implements ImageTransformer {
   }
 
   @Override
-  public void prepFunction() {
-    // TODO Auto-generated method stub
-    
+  public void prepFunction() throws IOException {
+    //Prep function used in all of the subclasses
   }
-
-
-  
-  
-  
-  //mosaic - will be called depending on what they want
-  
-  
-  
-  // pixelation
-  
-  
-  //crossstitch
 
 }

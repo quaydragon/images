@@ -28,12 +28,12 @@ public class Driver {
     Mosaic mosaic;
     CrossStitch cross;
     
-//    pixel = new Pixelation(me, 30);
-//    
-//    int[][][] transformedPixel = pixel.transform(me);
+    pixel = new Pixelation(me, 30);
+    
+    int[][][] transformedPixel = pixel.transform();
     
     
-//    me.writeImage(transformedPixel, "res/newer2.jpeg");
+    me.writeImage(transformedPixel, "res/newer2.jpeg");
 //    System.out.println("Transformed");
     
 //    mosaic = new Mosaic(me, 1000);
@@ -41,10 +41,10 @@ public class Driver {
 //    int[][][] transformedMosaic = mosaic.transform(me);
 //    
 //    me.writeImage(transformedMosaic, "res/mosaic.jpeg");
-    
-    cross = new CrossStitch(me);
-    
-    int[][][] crossMade = cross.transform(me);
+//    
+//    cross = new CrossStitch(me);
+//    
+//    int[][][] crossMade = cross.transform();
     
     
     

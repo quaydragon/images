@@ -84,9 +84,6 @@ public class ImageUtilities {
    */
   public static void writeImage(int[][][] rgb, int width, int height, String filename)
       throws IOException {
-    
-    System.out.println("wrote image");
-
     BufferedImage output = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
 
     for (int i = 0; i < height; i++) {

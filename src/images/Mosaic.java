@@ -5,13 +5,23 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
-public class Mosaic extends ImageTransformerClass{
+/**
+ * This class transforms an image into a mosaic.
+ * @author quaydragon
+ *
+ */
+public class Mosaic extends ImageTransformerClass {
   int seed;
   int[][][] seedArray;
   int[][][] imageArray;
   List<ArrayList<Integer>> seedAssignment;
 
-  
+  /**
+   * The Mosaic constructor creates the Mosaic class object.
+   * @param image the image to be transformed
+   * @param seed the number of seeds in the mosaic
+   * @throws IOException thrown if the image cannot be loaded
+   */
   public Mosaic(Image image, int seed) throws IOException {
     super(image);
     // for now the number of seeds cannot be greater than the number of combinations
@@ -24,35 +34,22 @@ public class Mosaic extends ImageTransformerClass{
     
   }
   
-  
+  /**
+   * Calculates the distance from the point to a seed value.
+   * Returns the color from the closest seed. 
+   */
   @Override
   public int[][][] specificTransform(int[][][] newImg, int i, int j) {
     
-
+    //Distance could never be greater than the height * width
     double distance = height * width;
-    // go through each of the seeds
-    // update which one is the closest with the color from that seed
-    
-    System.out.println("specific");
-    System.out.println(this.seedAssignment);
-    
-    for (ArrayList seed: this.seedAssignment) {
-      // calculate the distance
-      
-      
-      System.out.println(seed);
-      
-      double dis = Math.sqrt((i - (int) seed.get(0))*(i - (int) seed.get(0))
-          + (j - (int) seed.get(1))*(j - (int) seed.get(1)));
-      
-     System.out.println(dis);
-      
-      //compare the distance
-      
+    for (ArrayList<Integer> seed: this.seedAssignment) {
+      // Calculates the distance from the seeds
+      double dis = Math.sqrt((i - (int) seed.get(0)) * (i - (int) seed.get(0))
+          + (j - (int) seed.get(1)) * (j - (int) seed.get(1)));
+      // Updates if there is a closer seed
       if (dis < distance) {
         distance = (int) dis;
-        
-        System.out.println("We found shorter distance");
         
         newImg[i][j][0] = this.img[(int) seed.get(0)][(int) seed.get(1)][0];
         newImg[i][j][1] = this.img[(int) seed.get(0)][(int) seed.get(1)][1];
@@ -60,33 +57,23 @@ public class Mosaic extends ImageTransformerClass{
         
       }
       
-      // update the color
-      
     }
 
     return newImg;
   }
   
-  
-  // I think that assigning the seeds at random is actually the best
-  
-//TODO: Write a better javadoc  
+
   /**
-   * Assigning the seeds
+   * Generates random seeds across the image.
    */
   @Override
   public void prepFunction() {
     
-    int minimum = 0;
     int widthMax = this.width;
     int heightMax = this.height;
-    
-    //iterate through the number of seeds
-   
-    
-    
-    for(int s = 0; s < this.seed; s++) {
-      ArrayList<Integer> seed = new ArrayList();
+        
+    for (int s = 0; s < this.seed; s++) {
+      ArrayList<Integer> seed = new ArrayList<Integer>();
       Random rand = new Random();
       int randomWidth = rand.nextInt(widthMax);
       int randomHeight = rand.nextInt(heightMax);
@@ -98,9 +85,7 @@ public class Mosaic extends ImageTransformerClass{
       
       
     }
-    
-    
-//    return null;
+
   }
   
   

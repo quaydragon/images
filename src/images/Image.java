@@ -1,6 +1,5 @@
 package images;
 
-//TODO: make a better exception
 import java.io.IOException;
 
 /**

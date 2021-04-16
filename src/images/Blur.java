@@ -11,8 +11,8 @@ import java.util.List;
  *
  */
 public class Blur extends ImageTransformerClass {
-  List<Double> blur;
-  int tailLengths;
+  protected List<Double> blur;
+  protected int tailLengths;
   
   /**
    * Constructs the Blur class using an image. Applies a blur to that image.
@@ -29,7 +29,16 @@ public class Blur extends ImageTransformerClass {
    * Transforms each of the pixels and their surrounding pixels by multiplying the arrays.
    */
   @Override
-  public int[][][] specificTransform(int[][][] newImg, int i, int j)  {
+  public int[][][] specificTransform(int[][][] newImg, int i, int j)  
+      throws IllegalArgumentException {
+    
+    if (newImg == null) {
+      new IllegalArgumentException("Cannot Have A Null RGB MATRIX");
+    }
+    
+    if (i > height || j > width || i < 0 || j < 0) {
+      return newImg;
+    }
     
     
     
@@ -40,12 +49,16 @@ public class Blur extends ImageTransformerClass {
     for (int x = -this.tailLengths; x <= this.tailLengths; x++) {
       for (int y =  -this.tailLengths; y <= this.tailLengths; y++) {
         
-        if (i + x > height || j + y > width) {
+        if (i + x >= height 
+            || j + y >= width
+            || i + x < 0
+            || j + y < 0) {
           red.add((double) 0);
           green.add((double) 0);
           blue.add((double) 0);
 
         } else {
+
           double redInt = newImg[i + x][j + y][0];
           red.add(redInt);
           double greenInt = newImg[i + x][j + y][1];

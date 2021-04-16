@@ -27,7 +27,14 @@ public class Sepia extends ImageTransformerClass {
    * Transforms each of the pixels and their surrounding pixels by multiplying the arrays.
    */
   @Override
-  public int[][][] specificTransform(int[][][] newImg, int i, int j) {
+  public int[][][] specificTransform(int[][][] newImg, int i, int j) 
+      throws IllegalArgumentException {
+    if (newImg == null) {
+      new IllegalArgumentException("Cannot Have A Null RGB MATRIX");
+    }
+    if (i > height || j > width || i < 0 || j < 0) {
+      return newImg;
+    }
     
     List<Double> filterList = new ArrayList<>();
     

@@ -1,5 +1,6 @@
 package images;
 
+import java.io.File;
 import java.io.IOException;
 
 /**
@@ -8,7 +9,7 @@ import java.io.IOException;
  *
  */
 public class ImageClass implements Image {
-  String filename;
+  public String filename;
   
 
   /**
@@ -16,7 +17,12 @@ public class ImageClass implements Image {
    * @param filename location and name of the file. 
    */
   public ImageClass(String filename) {
-    this.filename = filename;
+    
+    File f = new File(filename);
+    if (f.exists() && !f.isDirectory()) { 
+      this.filename = filename;
+    }
+    
     
   }
 
@@ -27,12 +33,16 @@ public class ImageClass implements Image {
   }
 
   @Override
-  public void writeImage(int[][][] imageMatrix, String file) throws IOException {
+  public void writeImage(int[][][] imageMatrix, String file) 
+      throws IOException, IllegalArgumentException {
+    if (imageMatrix == null || file == null) {
+      throw new IllegalArgumentException("RGB Matrix or filename null");
+    }
+    
     int width = ImageUtilities.getWidth(this.filename);
     int height = ImageUtilities.getHeight(this.filename);
     
     ImageUtilities.writeImage(imageMatrix, width, height, file);
-    System.out.println("Progam done");
   }
 
   @Override

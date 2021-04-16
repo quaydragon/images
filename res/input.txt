@@ -1,0 +1,23 @@
+load res/bestie.jpeg
+blur
+save res/blurredBestie.jpeg
+load res/bestie.jpeg
+pattern res/bestiePattern.txt
+load res/bestie.jpeg
+dither 2
+save res/ditheredBestie.jpeg
+load res/bestie.jpeg
+greyscale
+save res/greyBestie.jpeg
+load res/bestie.jpeg
+mosaic 1400
+save res/mosaicBestie.jpeg
+load res/bestie.jpeg
+pixelate 50
+save res/pixelateBestie.jpeg
+load res/bestie.jpeg
+sepia
+save res/sepiaBestie.jpeg
+load res/bestie.jpeg
+sharpen
+save res/sharpenBestie.jpeg

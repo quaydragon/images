@@ -7,7 +7,9 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 /**
  * This is the CrossStitch class. This class takes in an outputs a .txt file 
@@ -16,33 +18,72 @@ import java.util.List;
  *
  */
 public class CrossStitch extends ImageTransformerClass {
-  Image image;
-  String filename;
-  List<ArrayList<String>> dmcColors;
-  List<ArrayList<String>> legend;
-  int[][][] transformedPixel;
-  int[][][] dmcColored;
-  BufferedWriter myWriter;
+  protected Image image;
+  protected String filename;
+  protected List<List<String>> dmcColors;
+  protected Set<List<String>> legend;
+  protected int[][][] transformedPixel;
+  protected int[][][] dmcColored;
+  protected BufferedWriter myWriter;
+  protected String oldColor;
+  protected String newColor;
+  protected String newColorSymbol;
 
+  
   /**
    * Constructs the CrossStitch class using a controller. 
    * @param image the image to be transformed into a cross stitch design
    * @throws IOException if the image cannot be loaded
    */
-  public CrossStitch(Image image) throws IOException {
+  public CrossStitch(Image image, String filename) throws IOException {
     super(image);
     this.image = image;
-    this.filename = null;
-    dmcColors = new ArrayList<ArrayList<String>>();
-    legend = new ArrayList<ArrayList<String>>();
+    this.filename = filename;
+    dmcColors = new ArrayList<List<String>>();
+    legend = new HashSet<List<String>>();
     transformedPixel = null;
-    myWriter = new BufferedWriter(new FileWriter("res/crossStitch.txt", true));
+    myWriter = new BufferedWriter(new FileWriter(filename, true));
     myWriter.write(String.valueOf(image.getWidth()));
     myWriter.write(" x ");
     myWriter.write(String.valueOf(image.getHeight()));
+    this.loadFile();
+    this.oldColor = null;
+    this.newColor = null;
+    this.newColorSymbol = null;
+
   }
   
+  /**
+   * This function initializes the CrossStitch class with the image, 
+   * the filename, and any color replacements the user wants. 
+   * 
+   * @param image the image to be initialized
+   * @param filename the file name
+   * @param oldColor the old color
+   * @param newColor the new color
+   * @throws IOException if the image cannot be loaded
+   */
+  public CrossStitch(Image image, String filename, 
+      String oldColor, String newColor) throws IOException {
+    super(image);
+    this.image = image;
+    this.filename = filename;
+    dmcColors = new ArrayList<List<String>>();
+    legend = new HashSet<List<String>>();
+    transformedPixel = null;
+    myWriter = new BufferedWriter(new FileWriter(filename, true));
+    myWriter.write(String.valueOf(image.getWidth()));
+    myWriter.write(" x ");
+    myWriter.write(String.valueOf(image.getHeight()));
+    
+    this.oldColor = oldColor;
+    this.newColor = newColor;
+    this.newColorSymbol = ".";
+    
+    this.loadFile();
+  }
   
+
   
 
   /**
@@ -52,7 +93,7 @@ public class CrossStitch extends ImageTransformerClass {
   @Override
   public void prepFunction() throws IOException {
     
-    this.loadFile();
+    
 
     Pixelation pixel = new Pixelation(image, 30);
     int[][][] transformedPixel = pixel.transform();
@@ -88,8 +129,10 @@ public class CrossStitch extends ImageTransformerClass {
     this.myWriter.newLine();
     
     this.myWriter.write("LEGEND");
+    System.out.println("Creating the legend");
     
-    for (ArrayList<String> legendRow : this.legend) {
+    for (List<String> legendRow : this.legend) {
+      
       this.myWriter.newLine();
       this.myWriter.write(legendRow.get(0));
       this.myWriter.write(": ");
@@ -109,7 +152,17 @@ public class CrossStitch extends ImageTransformerClass {
    * @exception IOException if writer cannot be opened
    */
   @Override
-  public int[][][] specificTransform(int[][][] newImg, int i, int j) throws IOException {
+  public int[][][] specificTransform(int[][][] newImg, int i, int j) 
+      throws IOException, IllegalArgumentException {
+    if (newImg == null) {
+      new IllegalArgumentException("Cannot Have A Null RGB MATRIX");
+    }
+    
+    if (i > height || j > width || i < 0 || j < 0) {
+      return newImg;
+    }
+    
+    
     int redPixelImage = newImg[i][j][0];
     int greenPixelImage = newImg[i][j][1];
     int bluePixelImage = newImg[i][j][2];
@@ -119,7 +172,7 @@ public class CrossStitch extends ImageTransformerClass {
     String legendValue = null;
     
     
-    for (ArrayList<String> dmc: this.dmcColors) {
+    for (List<String> dmc: this.dmcColors) {
       
       int redAverage  = (int) (Double.valueOf(dmc.get(0)) + redPixelImage) / 2;
       
@@ -136,6 +189,26 @@ public class CrossStitch extends ImageTransformerClass {
         distance = dis;
         symbol = dmc.get(3);
         legendValue = dmc.get(4);        
+        
+
+        if (legendValue.equals(this.oldColor)) {
+
+          
+          if (this.newColor != null) {
+            symbol = this.newColorSymbol;
+            legendValue = this.newColor;
+
+          } else if (this.newColor == null) {
+            symbol = ".";
+            legendValue = "No Dmc Color";
+
+          }
+          
+          
+        }
+        
+        
+        
       }
       
       
@@ -150,6 +223,7 @@ public class CrossStitch extends ImageTransformerClass {
     }
     ArrayList<String> legendRow = new ArrayList<String>();
     
+
     legendRow.add(symbol);
     legendRow.add(legendValue);
     this.legend.add(legendRow);
@@ -168,7 +242,7 @@ public class CrossStitch extends ImageTransformerClass {
   private void loadFile() throws IOException {
 
     
-    File file = new File("res/dmc.txt");
+    File file = new File("resources/dmc.txt");
     BufferedReader br = new BufferedReader(new FileReader(file)); 
     String st;
     while ((st = br.readLine()) != null) {
@@ -190,6 +264,10 @@ public class CrossStitch extends ImageTransformerClass {
       row.add(s);
       row.add(dmc);
       dmcColors.add(row);
+      
+      if (dmc.equals(this.newColor)) {
+        this.newColorSymbol = s;
+      }
       
 
     

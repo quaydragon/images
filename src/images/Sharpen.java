@@ -11,8 +11,8 @@ import java.util.List;
  *
  */
 public class Sharpen extends ImageTransformerClass {
-  List<Double> sharpen;
-  int tailLengths;
+  protected List<Double> sharpen;
+  protected int tailLengths;
 
   /**
    * Constructs the sharpen class from an image that will be sharpened. 
@@ -36,6 +36,10 @@ public class Sharpen extends ImageTransformerClass {
   @Override
   public int[][][] specificTransform(int[][][] newImg, int i, int j) {
     
+    if (i > height || j > width || i < 0 || j < 0) {
+      return newImg;
+    }
+    
     List<Double> red = new ArrayList<>();
     List<Double> green = new ArrayList<>();
     List<Double> blue = new ArrayList<>();
@@ -43,7 +47,10 @@ public class Sharpen extends ImageTransformerClass {
     for (int x = -this.tailLengths; x <= this.tailLengths; x++) {
       for (int y =  -this.tailLengths; y <= this.tailLengths; y++) {
         
-        if (i + x > height || j + y > width) {
+        if (i + x >= height 
+            || j + y >= width
+            || i + x < 0
+            || j + y < 0) {
           red.add((double) 0);
           green.add((double) 0);
           blue.add((double) 0);
@@ -79,7 +86,7 @@ public class Sharpen extends ImageTransformerClass {
   }
   
   /**
-   * The dot product function to calculate sharpen or blur.
+   * The dot product function to calculate sharpen.
    * @param list of values to be used in the function
    * @return the calculated integer
    */

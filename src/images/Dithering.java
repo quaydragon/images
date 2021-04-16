@@ -11,8 +11,8 @@ import java.util.List;
  *
  */
 public class Dithering extends ImageTransformerClass {
-  int maxColors;
-  List<Integer> intervalList;
+  protected int maxColors;
+  protected List<Integer> intervalList;
   
   /**
    * Constructs the dithering filter class with maxColors 
@@ -72,6 +72,10 @@ public class Dithering extends ImageTransformerClass {
   
   @Override
   public int[][][] specificTransform(int[][][] newImg, int i, int j) {
+    
+    if (i > height || j > width || i < 0 || j < 0) {
+      return newImg;
+    }
     int oldColorR = newImg[i][j][0];
     int oldColorG = newImg[i][j][1];
     int oldColorB = newImg[i][j][2];
@@ -116,26 +120,26 @@ public class Dithering extends ImageTransformerClass {
   private int[][][] floydSteinburg(int[][][] img, int colorNumber, int error, int i, int j) {
     
     
-    if (j + 1 <= width) {
+    if (j + 1 < width) {
       int errorEquation = (int) ((7.0 / 16.0) * error) + img[i][j + 1][colorNumber];
       img[i][j + 1][colorNumber] = this.clampValue(errorEquation);
       
     }
     
-    if (i + 1 <= height && j - 1 > 0) {
+    if (i + 1 < height && j - 1 > 0) {
       int errorEquation = (int) ((3.0 / 16.0) * error) + img[i + 1][j - 1][colorNumber];
       img[i + 1 ][j - 1][colorNumber] = this.clampValue(errorEquation);
       
     }
     
-    if (i + 1 <= height) {
+    if (i + 1 < height) {
       
       int errorEquation = (int) ((5.0 / 16.0) * error) + img[i + 1][j][colorNumber];
       img[i + 1][j][colorNumber] = this.clampValue(errorEquation);
       
     }
     
-    if (i + 1 <= height && j + 1 <= width) {
+    if (i + 1 < height && j + 1 < width) {
       
       int errorEquation = (int ) ((1.0 / 16.0) * error) + img[i + 1][j + 1][colorNumber];
       img[i + 1][j + 1][colorNumber] = this.clampValue(errorEquation);

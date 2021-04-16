@@ -10,14 +10,14 @@ import java.util.List;
  *
  */
 public class Pixelation extends ImageTransformerClass {
-  int squares;
-  int heightInterval;
-  int widthInterval;
-  int heightRemainder;
-  int widthRemainder;
-  List<ArrayList<Integer>> colorIntervalsRed;
-  List<ArrayList<Integer>> colorIntervalsGreen;
-  List<ArrayList<Integer>> colorIntervalsBlue;
+  protected int squares;
+  protected int heightInterval;
+  protected int widthInterval;
+  protected int heightRemainder;
+  protected int widthRemainder;
+  protected List<List<Integer>> colorIntervalsRed;
+  protected List<List<Integer>> colorIntervalsGreen;
+  protected List<List<Integer>> colorIntervalsBlue;
   
   /**
    * This constructs the pixelation class. 
@@ -28,14 +28,15 @@ public class Pixelation extends ImageTransformerClass {
    * @param squares of squares across and down
    * @throws IOException if the image cannot be loaded
    */
+ 
   public Pixelation(Image image, int squares) throws IOException {
     super(image);
     this.squares = squares;
     this.heightInterval = this.height / squares;
     this.widthInterval = this.width / squares;
-    this.colorIntervalsRed = new ArrayList<ArrayList<Integer>>();
-    this.colorIntervalsGreen = new ArrayList<ArrayList<Integer>>();
-    this.colorIntervalsBlue = new ArrayList<ArrayList<Integer>>();
+    this.colorIntervalsRed = new ArrayList<List<Integer>>();
+    this.colorIntervalsGreen = new ArrayList<List<Integer>>();
+    this.colorIntervalsBlue = new ArrayList<List<Integer>>();
        
     this.heightRemainder = this.height % squares;
     this.widthRemainder = this.width % squares;
@@ -131,12 +132,18 @@ public class Pixelation extends ImageTransformerClass {
    * This function reassigns the color of the pixel to the correct color interval.
    */
   @Override
-  public int[][][] specificTransform(int[][][] newImg, int i, int j) {
+  public int[][][] specificTransform(int[][][] newImg, int i, int j) 
+      throws IllegalArgumentException {
+    if (newImg == null) {
+      new IllegalArgumentException("Cannot Have A Null RGB MATRIX");
+    }
     
-    //TODO: Potentially combine into 1 for loop
-    // It will be computationally better
+    if (i > height || j > width || i < 0 || j < 0) {
+      return newImg;
+    }
+
  
-    for (ArrayList<Integer> lilListRed: this.colorIntervalsRed) {
+    for (List<Integer> lilListRed: this.colorIntervalsRed) {
       if (i <= (int) lilListRed.get(0) & j <= (int) lilListRed.get(1)) {
         newImg[i][j][0] = (int) lilListRed.get(2);
         break;
@@ -146,7 +153,7 @@ public class Pixelation extends ImageTransformerClass {
       
     }
       
-    for (ArrayList<Integer> lilListGreen: this.colorIntervalsGreen) {
+    for (List<Integer> lilListGreen: this.colorIntervalsGreen) {
       if (i <= (int) lilListGreen.get(0) & j <= (int) lilListGreen.get(1)) {
         
         newImg[i][j][1] = (int) lilListGreen.get(2);
@@ -155,7 +162,7 @@ public class Pixelation extends ImageTransformerClass {
       
     }
       
-    for (ArrayList<Integer> lilListBlue: this.colorIntervalsBlue) {
+    for (List<Integer> lilListBlue: this.colorIntervalsBlue) {
       if (i <= (int) lilListBlue.get(0) & j <= (int) lilListBlue.get(1)) {
    
         newImg[i][j][2] = (int) lilListBlue.get(2);

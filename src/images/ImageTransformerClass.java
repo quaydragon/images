@@ -9,19 +9,22 @@ import java.io.IOException;
  *
  */
 public class ImageTransformerClass implements ImageTransformer {
-  int clampMinimum;
-  int clampMaximum;
-  int[][][] transformedImage;
-  int height;
-  int width;
-  int[][][] img;
+  public int clampMinimum;
+  public int clampMaximum;
+  public int[][][] transformedImage;
+  public int height;
+  public int width;
+  public int[][][] img;
 
   /**
    * Takes in the image to be transformed by the sub-classes. 
    * @param image the image to be transformed
    * @throws IOException thrown if the image cannot be loaded
    */
-  public ImageTransformerClass(Image image) throws IOException {
+  public ImageTransformerClass(Image image) throws IOException, IllegalArgumentException {
+    if (image == null) {
+      new IllegalArgumentException("Cannot Have A Null Image");
+    }
     this.clampMinimum = 0;
     this.clampMaximum = 255;
     this.height = image.getHeight();
@@ -32,7 +35,6 @@ public class ImageTransformerClass implements ImageTransformer {
 
   @Override
   public int[][][] transform() throws IOException {
-    //TODO: Think about putting the prep function in the constructor
     this.prepFunction();
     int[][][] newImage = null;
 
@@ -48,11 +50,14 @@ public class ImageTransformerClass implements ImageTransformer {
 
     return newImage;
   }
+  
 
 
   @Override
   public int[][][] specificTransform(int[][][] img, int i, int j) throws IOException {
-
+    if (i > height || j > width || i < 0 || j < 0) {
+      return img;
+    }
     return img;
   }
   
